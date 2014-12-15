@@ -1,0 +1,13 @@
+{
+  "asi": true
+  , "laxcomma": true
+  , "laxbreak": true
+  , "expr": true
+  , "unused": true
+  , "globals": {
+    "describe": true
+    , "it": true
+    , "beforeEach": true
+    , "afterEach": true
+  }
+}
