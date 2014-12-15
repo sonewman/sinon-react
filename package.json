@@ -1,6 +1,6 @@
 {
   "name": "sinon-react",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "sinon react helper",
   "main": "sinon-react.js",
   "scripts": {
