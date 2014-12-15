@@ -67,9 +67,7 @@ function reactClassProto(reactClass) {
   return ctor.prototype
 }
 
-function stubOrSpy(sr, which, obj, attr, spy) {
-  var orig = obj[attr]
-
+function stubOrSpy(sr, which, obj, attr, orig, spy) {
   sr._mutated.push({
     obj: obj
     , attr: attr
@@ -82,6 +80,7 @@ function stubOrSpy(sr, which, obj, attr, spy) {
 
 function stubOrSpyReactClass(sr, which, reactClass, method) {
   var proto = reactClassProto(reactClass)
+  var orig = proto[method]
   var spy = sr.sinon[which](proto, method)
 
   // react.js will autobind `this` to the correct value and it caches that
@@ -89,7 +88,7 @@ function stubOrSpyReactClass(sr, which, reactClass, method) {
   if(proto.__reactAutoBindMap)
     proto.__reactAutoBindMap[method] = spy;
 
-  return stubOrSpy(sr, which, proto, method, spy)
+  return stubOrSpy(sr, which, proto, method, orig, spy)
 }
 
 SinonReact.prototype.stubClassMethod = function (reactClass, method) {
@@ -111,7 +110,7 @@ SinonReact.prototype.stubComponent = function (obj, attr) {
       return React.DOM.div()
     }
   })
-  stubOrSpy(this, 'stub', obj, attr, comp)
+  stubOrSpy(this, 'stub', obj, attr, comp, obj[attr])
   return comp
 }
 
@@ -120,9 +119,9 @@ function restore(item) {
   var spy = item.spy
 
   if (obj.__reactAutoBindMap)
-    obj.__reactAutoBindMap[item.method] = item.orig
+    obj.__reactAutoBindMap[item.attr] = item.orig
 
-  obj[item.method] = item.orig
+  obj[item.attr] = item.orig
   if (spy && isFunc(spy.restore)) spy.restore()
 }
 
